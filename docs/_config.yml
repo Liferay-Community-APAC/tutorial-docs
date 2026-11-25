@@ -1,0 +1,33 @@
+# Settings for the tutorial docs: one folder per tutorial under docs/, published at
+# https://liferay-community-apac.github.io/tutorial-docs/<tutorial>/
+app_name: Tutorials
+description: Step-by-step Liferay DXP tutorials from Liferay Community APAC, published as web pages.
+baseurl: /tutorial-docs               # "/" + this repository's name
+
+# The site section the docs belong to: the menu highlights it, and the breadcrumbs link to it.
+section_id: tutorials
+section_name: Tutorials & Tools
+section_url: tutorials/
+
+url: https://liferay-community-apac.github.io
+lang: en
+# The main site the header, footer, styles and search come from. Leave it empty on the live site;
+# set it to the full address (https://liferay-community-apac.github.io) to preview the docs on their own.
+main_site: ""
+
+plugins:
+  - jekyll-sitemap      # writes sitemap.xml; the main site lists it in robots.txt via data/apps.json
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  auto_ids: true
+  hard_wrap: false
+  syntax_highlighter_opts:
+    disable: true
+
+defaults:
+  - scope: { path: "" }
+    values: { layout: default }
+
+exclude: [README.md, Gemfile, Gemfile.lock, vendor]
