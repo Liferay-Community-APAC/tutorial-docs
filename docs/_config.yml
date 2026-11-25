@@ -28,6 +28,11 @@ kramdown:
 
 defaults:
   - scope: { path: "" }
-    values: { layout: default }
+    values: { layout: default, lang: en }
+  # Translations: one folder per language inside a tutorial's folder. See _data/i18n.yml.
+  - scope: { path: "liferay-cloud-webserver-log-backup/ja" }
+    values: { lang: ja }
+  - scope: { path: "liferay-cloud-traffic-measurement/ja" }
+    values: { lang: ja }
 
 exclude: [README.md, Gemfile, Gemfile.lock, vendor]

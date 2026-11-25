@@ -34,23 +34,57 @@ classifier and `build_report.py`.
 
 ## Reading it
 
-Choose the last 7, 14 or 30 days at the top. Where the data covers the previous period too, each figure shows the
-change against it, coloured by whether the change is good.
+The screenshots below come from the sample dashboard.
 
-| Section | Question it answers |
+### Headline figures
+
+Choose the last 7, 14 or 30 days at the top. Where the data covers the previous period too, each figure shows the
+change against it, coloured by whether the change is good: here, the automated share fell by 10.2 points, which is
+good, so it is green.
+
+![The headline figures for the last 7 days, each compared with the previous 7](../images/dashboard-tiles.png)
+{: .screenshot }
+
+| Figure | Question it answers |
 | --- | --- |
-| Human page views (headline) | How much real traffic does the site get, and is it growing? |
+| Human page views | How much real traffic does the site get, and is it growing? |
 | Automated share | How much of the traffic is bots that don't identify themselves? |
-| Backend time used by automation | How much of Liferay's page processing goes to bots? Bots often hit expensive pages such as search, so this can be well above their share of page views. |
+| Backend time used by automation | How much of Liferay's page processing goes to bots? |
 | Identified bots and search engines | How much comes from crawlers that announce themselves? |
 | Uncertain (data quality) | Can the numbers be trusted? If this share grows, the rules need tuning. |
-| Page views per day, by class | When did bot traffic spike? Hover a column for the day's breakdown. |
-| Humans vs automation share | Is the mix changing over time? |
-| Where page processing time goes | Backend time and average time per page, by class |
-| Why page views were flagged | Which signals drive the results |
-| Pages most targeted by automation | What are bots after? |
-| Top automated clients | Candidates for blocking or rate limiting: cloud provider, user agent, days seen |
-| Daily numbers | The same data as a table |
+
+### Day by day
+
+When did bot traffic spike? Hover a column for that day's breakdown. In the sample, a five-day scraping campaign
+stands out in the middle of the period.
+
+![Page views per day by class, with the breakdown of one campaign day](../images/dashboard-daily.png)
+{: .screenshot }
+
+### Mix and cost
+
+The share chart shows whether the mix of humans and automation is changing. The processing-time chart shows which
+classes cost the most backend time, with the average per page: bots often hit expensive pages such as search, so
+their share of backend time can be well above their share of page views.
+
+![Share of humans and automation per day, and backend time by class](../images/dashboard-share-time.png)
+{: .screenshot }
+
+### Why and where
+
+Which signals drive the classification, and which pages the bots are after.
+
+![The signals that flagged page views, and the pages most targeted by automation](../images/dashboard-signals-paths.png)
+{: .screenshot }
+
+### Clients to block
+
+The automated clients with the most page views: candidates for blocking or rate limiting, with their cloud
+provider, user agent and the number of days they were seen. Below this, **Daily numbers** shows the same data as a
+table.
+
+![The top automated clients, by salted IP hash and user agent](../images/dashboard-clients.png)
+{: .screenshot }
 
 {: .note }
 The top clients are summed from each day's top 50, so their totals can be slightly low. The network column shows

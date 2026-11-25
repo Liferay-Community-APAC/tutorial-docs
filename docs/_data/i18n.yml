@@ -1,0 +1,50 @@
+# Interface text for each docs language. English pages live in the tutorial's folder; a translation lives in a
+# folder named after the language code inside it (docs/<tutorial>/ja/), with the same file names.
+# Give each translated folder its "lang" in _config.yml (defaults), and list the language in the tutorial's
+# data/apps.json entry on the main site ("docsLanguages").
+en:
+  name: English
+  prefix: ""
+  hreflang: en
+  overview: Overview
+  home: Home
+  section_name: Tutorials & Tools
+  section_url: tutorials/
+  previous: Previous
+  next: Next
+  pager_label: Previous and next
+  report: Report a problem →
+  anchor: Link to this section
+  copy: Copy
+  copied: Copied
+  copy_label: Copy the code to the clipboard
+  disclaimer: Apps, tutorials, sample code and guides on this site are unofficial and provided as-is. Use them at your own risk.
+  # Labels the main site's stylesheet shows in English; the layout overrides them in other languages.
+  toc: On this page
+  note: Note
+  important: Important
+  tip: Tip
+  warning: Warning
+ja:
+  name: 日本語
+  prefix: ja/
+  hreflang: ja
+  overview: 概要
+  home: ホーム
+  section_name: チュートリアルとツール
+  section_url: ja/tutorials/
+  previous: 前へ
+  next: 次へ
+  pager_label: 前後のページ
+  report: 問題を報告する →
+  anchor: このセクションへのリンク
+  copy: コピー
+  copied: コピーしました
+  copy_label: コードをクリップボードにコピー
+  disclaimer: このサイトのアプリ、チュートリアル、サンプルコード、ガイドは非公式のもので、現状のまま提供されます。ご自身の責任でご利用ください。
+  toc: このページの内容
+  note: 注
+  important: 重要
+  tip: ヒント
+  warning: 警告
+  translation_note: このページは英語版を翻訳したものです。AWS、GitHub、Liferay の画面のメニュー名やボタン名は英語で表記しています。内容が異なる場合は、<a href="%EN_URL%">英語版</a>が優先されます。

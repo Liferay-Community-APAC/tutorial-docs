@@ -130,6 +130,9 @@ Add the scheduled GitHub Actions workflow that backs up the previous UTC day as 
 
 ## How it's built
 
+![The plan job fixes yesterday's date, then the 24 hourly jobs run 4 at a time](../images/hourly-jobs.png)
+{: .screenshot }
+
 - **`plan` job:** works out "yesterday" once. Every hourly job uses that date, including one that starts late or is
   re-run later.
 - **`backup` job:** a matrix of the 24 hours. `fail-fast: false` keeps the other hours running if one fails.

@@ -119,5 +119,8 @@ doesn't, claims count as `declared_bot` instead of being called fake.
 
 ## Check
 
+![Classifying one day writes four CSV files; the daily summary has one row per class](../images/classifier-run.png)
+{: .screenshot }
+
 `out/2026-11-24/` contains `daily_summary.csv`, `signals.csv`, `top_clients.csv` and `top_paths.csv`, and the
 summary's `share_pct` values for the day add up to 100.
