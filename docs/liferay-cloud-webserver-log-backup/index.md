@@ -21,6 +21,9 @@ You can also [download this tutorial as a PDF](Liferay-Cloud-Webserver-Log-Backu
 
 Every day at 01:30 UTC, a GitHub Actions workflow backs up the previous UTC day:
 
+![The backup flow: GitHub Actions, a plan job, 24 hourly jobs, Amazon S3](images/flow.png)
+{: .screenshot }
+
 | Step | What happens |
 | --- | --- |
 | **Plan** | A short job fixes "yesterday" once for the whole run. |

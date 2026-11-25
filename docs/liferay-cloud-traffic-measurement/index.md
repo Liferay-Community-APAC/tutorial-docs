@@ -12,13 +12,16 @@ How much of your site's traffic is real people? This tutorial adds measurement t
 backend time bots consume. It is for Liferay Cloud administrators, and for consultants answering "how much of our
 traffic is bots?" or "what should we block?".
 
-![The traffic dashboard, built from 30 days of synthetic traffic](dashboard.png)
+![The traffic dashboard, built from 30 days of synthetic traffic](images/dashboard.png)
 {: .screenshot }
 
 1. TOC
 {:toc}
 
 ## What You'll Build
+
+![From the visitor's browser to the dashboard: webserver logs, log backup, classifier, dashboard](images/flow.png)
+{: .screenshot }
 
 | Part | What it does |
 | --- | --- |

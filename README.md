@@ -19,8 +19,8 @@ repository of its own instead, like the
 | --- | --- |
 | `docs/<tutorial>/` | One folder per tutorial. Its `index.md` is the tutorial's home page. |
 | `TUTORIAL_TEMPLATE/` | A starting point for a new tutorial's folder. |
-| `docs/example-tutorial/` | A placeholder. Delete it when the first real tutorial is added. |
-| `docs/_layouts/default.html` | The page layout. The sidebar and breadcrumbs cover the current tutorial only. |
+| `docs/_layouts/default.html` | The page layout. The sidebar and breadcrumbs cover the current tutorial, in the page's language only. |
+| `docs/_data/i18n.yml` | The layout's interface text in each language, such as **Previous**, **Next** and **Copy**. |
 | `docs/index.md` | Forwards `/tutorial-docs/` to the main site's Tutorials & Tools page. |
 | `.github/workflows/pages.yml` | Publishes the docs with the shared workflow whenever `docs/` changes on `main`. |
 
@@ -58,7 +58,13 @@ repository of its own instead, like the
 
     That lists the tutorial on the Tutorials & Tools pages in every language, includes it in the site search, and
     tells search engines about it.
-5. **Open a pull request.**
+5. **Optional: add a translation.** Copy the tutorial's pages into `docs/<tutorial>/ja/` (or another language
+   code), keeping the same file names and translating the text, titles and `parent` values. Add the folder to
+   `defaults` in `docs/_config.yml` with its `lang`, and the language's interface text to `docs/_data/i18n.yml` if
+   it isn't there yet. The sidebar, breadcrumbs and previous and next links then stay in that language, and the main
+   site's language menu switches between the translations. On the main site, add the language to the entry's
+   `"docsLanguages"` in `data/apps.json` and point that language's link at `tutorial-docs/<tutorial>/ja/`.
+6. **Open a pull request.**
 
 ## Preview locally
 

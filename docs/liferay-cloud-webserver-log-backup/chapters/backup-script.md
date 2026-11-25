@@ -206,4 +206,7 @@ folder and skips the upload. For example
 
 On a Linux machine with `lcp` signed in, a dry run for one hour of yesterday ends with
 `DRY_RUN: would upload N lines to s3://…/day=DD/webserver-<PROJECT_ID>-YYYY-MM-DDT13.log.gz`, and the line before it
-shows first and last timestamps between `13:00` and `13:59`.
+shows first and last timestamps between `13:00` and `13:59`:
+
+![A dry run for 13:00 UTC keeps 1,156 access lines, from 13:00:01 to 13:59:53](../images/dry-run.png)
+{: .screenshot }

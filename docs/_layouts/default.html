@@ -14,11 +14,21 @@
     footer_note: a line for the footer, such as the tutorial's licence
     issues:     optional; where to report a problem, if not this repository's issues
     og_image:   a picture for link previews, as a path under the site
+
+  Translations: a tutorial's pages in another language live in a folder named after the language inside the
+  tutorial's folder (docs/<tutorial>/ja/), with the same file names. _config.yml gives that folder its "lang",
+  and _data/i18n.yml holds the interface text. The sidebar, breadcrumbs and pager show only the page's language,
+  and hreflang links name the page's translations, which the main site's header uses to switch language.
 {%- endcomment -%}
+{%- assign lang = page.lang | default: site.lang | default: "en" -%}
+{%- assign ui = site.data.i18n[lang] | default: site.data.i18n.en -%}
 {%- assign main = site.main_site | default: "" -%}
 {%- assign app_slug = page.url | split: "/" | slice: 1, 1 | first -%}
-{%- assign app_prefix = "/" | append: app_slug | append: "/" -%}
-{%- assign app_pages = site.pages | where_exp: "p", "p.title" | where_exp: "p", "p.nav_exclude != true" | where_exp: "p", "p.url contains app_prefix" -%}
+{%- assign app_root = "/" | append: app_slug | append: "/" -%}
+{%- assign app_prefix = app_root | append: ui.prefix -%}
+{%- comment -%} The page's address inside its tutorial and language folder, shared by all its translations. {%- endcomment -%}
+{%- assign page_rel = page.url | remove_first: app_prefix -%}
+{%- assign app_pages = site.pages | where_exp: "p", "p.title" | where_exp: "p", "p.nav_exclude != true" | where_exp: "p", "p.url contains app_prefix" | where: "lang", lang -%}
 {%- assign app_home = app_pages | where: "url", app_prefix | first -%}
 {%- assign app_name = app_home.title | default: site.app_name -%}
 {%- assign tops = app_pages | where_exp: "p", "p.parent == nil" | sort: "nav_order", "last" -%}
@@ -32,7 +42,7 @@
 {%- assign footer_note = app_home.footer_note -%}
 {%- assign og_image = page.og_image | default: app_home.og_image -%}
 <!doctype html>
-<html lang="{{ page.lang | default: site.lang | default: 'en' }}">
+<html lang="{{ lang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -42,6 +52,20 @@
   {%- assign desc = page.description | default: first_p | default: site.description %}
   <meta name="description" content="{{ desc | escape }}">
   <link rel="canonical" href="{{ site.url }}{{ site.baseurl }}{{ page.url }}">
+  {%- if app_home %}
+  {%- assign alt_count = 0 -%}
+  {%- for l in site.data.i18n %}{% assign alt_url = app_root | append: l[1].prefix | append: page_rel %}{% assign alt = site.pages | where: "url", alt_url | first %}{% if alt %}{% assign alt_count = alt_count | plus: 1 %}{% endif %}{% endfor %}
+  {%- if alt_count > 1 %}
+  {%- for l in site.data.i18n %}
+  {%- assign alt_url = app_root | append: l[1].prefix | append: page_rel -%}
+  {%- assign alt = site.pages | where: "url", alt_url | first -%}
+  {%- if alt %}
+  <link rel="alternate" hreflang="{{ l[1].hreflang }}" href="{{ site.url }}{{ site.baseurl }}{{ alt_url }}">
+  {%- endif %}
+  {%- endfor %}
+  <link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ site.baseurl }}{{ app_root }}{{ page_rel }}">
+  {%- endif %}
+  {%- endif %}
   <meta property="og:title" content="{% unless is_home %}{{ page.title }} · {% endunless %}{{ app_name }}">
   <meta property="og:description" content="{{ desc | escape }}">
   <meta property="og:type" content="article">
@@ -64,6 +88,14 @@
     .copy-code { position: absolute; top: 8px; right: 8px; padding: 3px 10px; font: 600 12px/1.6 var(--font, inherit); color: var(--muted); background: var(--surface, #fff); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
     .copy-code:hover, .copy-code:focus-visible { color: var(--text); border-color: var(--muted); }
     .copy-code.copied { color: var(--blue); border-color: var(--blue); }
+    {%- if lang != "en" %}
+    /* Labels the main site's stylesheet writes in English. */
+    .prose #markdown-toc::before { content: {{ ui.toc | jsonify }}; letter-spacing: .02em; }
+    .prose p.note::before { content: {{ ui.note | jsonify }}; }
+    .prose p.important::before { content: {{ ui.important | jsonify }}; }
+    .prose p.tip::before { content: {{ ui.tip | jsonify }}; }
+    .prose p.warning::before { content: {{ ui.warning | jsonify }}; }
+    {%- endif %}
   </style>
 </head>
 <body data-section="{{ site.section_id }}">
@@ -82,7 +114,7 @@
       {%- for t in tops %}
       {%- assign kids = app_pages | where: "parent", t.title | sort: "nav_order", "last" -%}
       {%- assign open = false -%}{%- if t.url == page.url or page.parent == t.title -%}{%- assign open = true -%}{%- endif %}
-      <li{% if open %} class="open"{% endif %}><a href="{{ t.url | relative_url }}"{% if t.url == page.url %} aria-current="page"{% endif %}>{% if t.url == app_prefix %}Overview{% else %}{{ t.title }}{% endif %}</a>
+      <li{% if open %} class="open"{% endif %}><a href="{{ t.url | relative_url }}"{% if t.url == page.url %} aria-current="page"{% endif %}>{% if t.url == app_prefix %}{{ ui.overview }}{% else %}{{ t.title }}{% endif %}</a>
         {%- if kids.size > 0 %}
         <ul>
           {%- for k in kids %}
@@ -95,19 +127,23 @@
     </ul>
     {%- comment %} Problems with a tutorial go to this repository's issues, unless its home page names another tracker in "issues". {% endcomment %}
     <ul class="docs-nav-issues" style="margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--border);">
-      <li><a href="{{ app_home.issues | default: 'https://github.com/Liferay-Community-APAC/tutorial-docs/issues/new' }}">Report a problem →</a></li>
+      <li><a href="{{ app_home.issues | default: 'https://github.com/Liferay-Community-APAC/tutorial-docs/issues/new' }}">{{ ui.report }}</a></li>
     </ul>
   </details>
   {%- endif %}
 
   <main class="docs-main">
     <p class="docs-crumbs">
-      <a href="{{ main }}/">Home</a><span>/</span>
-      {%- if site.section_name %}<a href="{{ main }}/{{ site.section_url }}">{{ site.section_name }}</a><span>/</span>{% endif -%}
+      <a href="{{ main }}/{% if lang != 'en' %}{{ ui.prefix }}{% endif %}">{{ ui.home }}</a><span>/</span>
+      {%- if site.section_name %}<a href="{{ main }}/{{ ui.section_url | default: site.section_url }}">{{ ui.section_name | default: site.section_name }}</a><span>/</span>{% endif -%}
       {%- if app_home == nil %}{{ page.title }}{% elsif is_home %}{{ app_name }}{% else %}<a href="{{ app_prefix | relative_url }}">{{ app_name }}</a>{% endif -%}
       {%- if page.parent %}{% assign par = tops | where: "title", page.parent | first %}{% if par %}<span>/</span><a href="{{ par.url | relative_url }}">{{ par.title }}</a>{% endif %}{% endif %}
     </p>
     <article class="prose"{% unless page.search_exclude %} data-pagefind-body{% endunless %}>
+      {%- if lang != "en" and ui.translation_note and app_home %}
+      {%- assign en_href = app_root | append: page_rel | relative_url %}
+      <p class="docs-translation-note" style="font-size: 0.9em; color: var(--muted);">{{ ui.translation_note | replace: "%EN_URL%", en_href }}</p>
+      {%- endif %}
       {{ content }}
     </article>
 
@@ -115,9 +151,9 @@
     {%- for p in ordered -%}{%- if p.url == page.url -%}{%- assign idx = forloop.index0 -%}{%- endif -%}{%- endfor -%}
     {%- if idx >= 0 %}
     {%- assign prev_i = idx | minus: 1 -%}{%- assign next_i = idx | plus: 1 %}
-    <nav class="pager" aria-label="Previous and next">
-      {%- if idx > 0 %}{% assign pp = ordered[prev_i] %}<a class="prev" href="{{ pp.url | relative_url }}"><span>Previous</span>{% if pp.url == app_prefix %}Overview{% else %}{{ pp.title }}{% endif %}</a>{% endif %}
-      {%- if next_i < ordered.size %}{% assign np = ordered[next_i] %}<a class="next" href="{{ np.url | relative_url }}"><span>Next</span>{{ np.title }}</a>{% endif %}
+    <nav class="pager" aria-label="{{ ui.pager_label }}">
+      {%- if idx > 0 %}{% assign pp = ordered[prev_i] %}<a class="prev" href="{{ pp.url | relative_url }}"><span>{{ ui.previous }}</span>{% if pp.url == app_prefix %}{{ ui.overview }}{% else %}{{ pp.title }}{% endif %}</a>{% endif %}
+      {%- if next_i < ordered.size %}{% assign np = ordered[next_i] %}<a class="next" href="{{ np.url | relative_url }}"><span>{{ ui.next }}</span>{{ np.title }}</a>{% endif %}
     </nav>
     {%- endif %}
   </main>
@@ -127,11 +163,12 @@
   {%- if footer_note %}
   <p data-footer-note>{{ footer_note }}</p>
   {%- endif %}
-  <p class="wrap disclaimer">Apps, tutorials, sample code and guides on this site are unofficial and provided as-is. Use them at your own risk.</p>
+  <p class="wrap disclaimer">{{ ui.disclaimer }}</p>
 </footer>
 
 <script>
   (function () {
+    var T = {{ ui | jsonify }};
     // Open the sidebar on wide screens; on phones it starts folded.
     var nav = document.getElementById('docs-nav');
     var mq = window.matchMedia('(min-width: 961px)');
@@ -141,7 +178,7 @@
     document.querySelectorAll('.prose h2[id], .prose h3[id], .prose h4[id]').forEach(function (h) {
       var a = document.createElement('a');
       a.className = 'anchor'; a.href = '#' + h.id; a.textContent = '#';
-      a.setAttribute('aria-label', 'Link to this section');
+      a.setAttribute('aria-label', T.anchor);
       h.appendChild(a);
     });
     // A "Copy" button on each code block.
@@ -161,13 +198,13 @@
       pre.parentNode.insertBefore(box, pre);
       box.appendChild(pre);
       var b = document.createElement('button');
-      b.type = 'button'; b.className = 'copy-code'; b.textContent = 'Copy';
-      b.setAttribute('aria-label', 'Copy the code to the clipboard');
+      b.type = 'button'; b.className = 'copy-code'; b.textContent = T.copy;
+      b.setAttribute('aria-label', T.copy_label);
       b.addEventListener('click', function () {
         var code = pre.querySelector('code') || pre;
         copyText(code.innerText.replace(/\n$/, '')).then(function () {
-          b.textContent = 'Copied'; b.classList.add('copied');
-          setTimeout(function () { b.textContent = 'Copy'; b.classList.remove('copied'); }, 2000);
+          b.textContent = T.copied; b.classList.add('copied');
+          setTimeout(function () { b.textContent = T.copy; b.classList.remove('copied'); }, 2000);
         }, function () {
           // No clipboard access: select the code so it can be copied by hand.
           var range = document.createRange(); range.selectNodeContents(code);
