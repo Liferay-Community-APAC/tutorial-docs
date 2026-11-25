@@ -1,0 +1,9 @@
+assemble:
+    - from: assets
+      into: static
+
+traffic-beacon:
+    name: Traffic Beacon
+    type: globalJS
+    url: beacon.js
+    scriptLocation: bottom
